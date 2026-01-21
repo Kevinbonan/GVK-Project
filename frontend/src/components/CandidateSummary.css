@@ -1,0 +1,40 @@
+.candidate-summary-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 8px;
+}
+
+.candidate-summary-list {
+  list-style-type: none;
+  padding: 0;
+  border: 1px solid #cccccc;
+  padding: 0px 5px;
+  border-radius: 8px;
+  width: 100%;
+}
+
+.candidate-summary-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #cccccc;
+  font-size: 16px;
+}
+
+.candidate-summary-item:last-child {
+  border-bottom: none;
+}
+
+.candidate-summary-label {
+  font-weight: bold;
+  color: #333333;
+}
+
+.candidate-summary-value {
+  color: #555555;
+}
+
+.login-page {
+  width: 100%;
+}

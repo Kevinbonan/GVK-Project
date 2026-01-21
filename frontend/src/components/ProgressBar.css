@@ -1,0 +1,25 @@
+.progress-bar-container {
+  position: relative;
+  width: 400px;
+  background-color: #f0f0f0;
+  height: 20px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.progress-bar {
+  position: relative;
+  height: 100%;
+  background-color: #007bff;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.step-number {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-weight: bold;
+}
