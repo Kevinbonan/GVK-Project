@@ -1,0 +1,58 @@
+.candidate-details-page {
+  padding: 16px;
+}
+
+.candidate-card {
+  background: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+}
+
+.candidate-card select {
+  margin-left: 8px;
+}
+
+.candidate-sections {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.interview-form {
+  display: grid;
+  gap: 10px;
+}
+
+.interview-form input,
+.interview-form select,
+.interview-form textarea {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #d4d4d4;
+}
+
+.interview-form button {
+  background: #1a237e;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.interview-list,
+.history-list {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+}
+
+.interview-list li,
+.history-list li {
+  background: #f8f9fb;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}

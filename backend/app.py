@@ -34,6 +34,9 @@ db = client.gvk_database
 users = db.users
 
 candidates = db.candidates
+jobs = db.jobs
+interviews = db.interviews
+status_history = db.status_history
 
 
 app.secret_key = os.urandom(24)
@@ -41,6 +44,44 @@ app.secret_key = os.urandom(24)
 
 
 users.create_index([("username", 1)], unique=True)
+jobs.create_index([("title", 1)], unique=True)
+
+PIPELINE_STATUSES = [
+    "Applied",
+    "HR Interview",
+    "Technical Interview",
+    "Offer",
+    "Hired",
+    "Rejected",
+]
+
+
+def serialize_document(document):
+    if not document:
+        return None
+    document["_id"] = str(document["_id"])
+    if "candidate_id" in document:
+        document["candidate_id"] = str(document["candidate_id"])
+    return document
+
+
+def serialize_list(documents):
+    serialized = []
+    for document in documents:
+        serialized.append(serialize_document(document))
+    return serialized
+
+
+def add_status_history(candidate_id, from_status, to_status, changed_by):
+    status_history.insert_one(
+        {
+            "candidate_id": ObjectId(candidate_id),
+            "from_status": from_status,
+            "to_status": to_status,
+            "changed_at": datetime.utcnow().isoformat(),
+            "changed_by": changed_by,
+        }
+    )
 
 
 
@@ -93,6 +134,9 @@ def get_message():
 def insert_candidate():
     candidate = request.json
     organized_candidate = {key:value for (key, value) in candidate["candidate"].items()}
+    organized_candidate.setdefault("status", "Applied")
+    organized_candidate.setdefault("created_at", datetime.utcnow().isoformat())
+    organized_candidate["updated_at"] = datetime.utcnow().isoformat()
     candidates.insert_one(organized_candidate)
     return jsonify({"message": "המועמד נוסף למסד הנתונים"}), 200
 
@@ -158,12 +202,133 @@ def allCandidates():
     return jsonify(candidates_list), 200 
 
 
+@app.route("/candidates", methods=["GET"])
+@login_required
+def list_candidates():
+    status_filter = request.args.get("status")
+    job_filter = request.args.get("job")
+    query = {}
+    if status_filter:
+        query["status"] = status_filter
+    if job_filter:
+        query["תפקיד"] = job_filter
+    candidates_list = candidates.find(query)
+    return jsonify(serialize_list(candidates_list)), 200
+
+
+@app.route("/candidates/<candidate_id>", methods=["GET"])
+@login_required
+def get_candidate(candidate_id):
+    candidate = candidates.find_one({"_id": ObjectId(candidate_id)})
+    if not candidate:
+        return jsonify({"error": "Candidate not found"}), 404
+    return jsonify(serialize_document(candidate)), 200
+
+
+@app.route("/candidates/<candidate_id>/status", methods=["PUT"])
+@login_required
+def update_candidate_status(candidate_id):
+    payload = request.json or {}
+    new_status = payload.get("status")
+    if new_status not in PIPELINE_STATUSES:
+        return jsonify({"error": "Invalid status"}), 400
+    candidate = candidates.find_one({"_id": ObjectId(candidate_id)})
+    if not candidate:
+        return jsonify({"error": "Candidate not found"}), 404
+    previous_status = candidate.get("status", "Applied")
+    candidates.update_one(
+        {"_id": ObjectId(candidate_id)},
+        {"$set": {"status": new_status, "updated_at": datetime.utcnow().isoformat()}},
+    )
+    add_status_history(candidate_id, previous_status, new_status, current_user.username)
+    return jsonify({"message": "Status updated"}), 200
+
+
+@app.route("/candidates/<candidate_id>/interviews", methods=["POST"])
+@login_required
+def add_interview(candidate_id):
+    payload = request.json or {}
+    interview = {
+        "candidate_id": ObjectId(candidate_id),
+        "type": payload.get("type"),
+        "date": payload.get("date"),
+        "interviewer": payload.get("interviewer"),
+        "notes": payload.get("notes"),
+        "score": payload.get("score"),
+        "created_at": datetime.utcnow().isoformat(),
+    }
+    interviews.insert_one(interview)
+    return jsonify({"message": "Interview added"}), 201
+
+
+@app.route("/candidates/<candidate_id>/interviews", methods=["GET"])
+@login_required
+def list_interviews(candidate_id):
+    interviews_list = interviews.find({"candidate_id": ObjectId(candidate_id)})
+    return jsonify(serialize_list(interviews_list)), 200
+
+
+@app.route("/candidates/<candidate_id>/history", methods=["GET"])
+@login_required
+def list_history(candidate_id):
+    history_list = status_history.find({"candidate_id": ObjectId(candidate_id)}).sort(
+        "changed_at", 1
+    )
+    return jsonify(serialize_list(history_list)), 200
+
+
+@app.route("/jobs", methods=["POST"])
+@login_required
+def create_job():
+    payload = request.json or {}
+    job = {
+        "title": payload.get("title"),
+        "department": payload.get("department"),
+        "location": payload.get("location"),
+        "status": payload.get("status", "open"),
+        "created_at": datetime.utcnow().isoformat(),
+        "updated_at": datetime.utcnow().isoformat(),
+    }
+    result = jobs.insert_one(job)
+    job["_id"] = str(result.inserted_id)
+    return jsonify(job), 201
+
+
+@app.route("/jobs", methods=["GET"])
+@login_required
+def list_jobs():
+    jobs_list = jobs.find()
+    return jsonify(serialize_list(jobs_list)), 200
+
+
+@app.route("/jobs/<job_id>", methods=["PUT"])
+@login_required
+def update_job(job_id):
+    payload = request.json or {}
+    payload["updated_at"] = datetime.utcnow().isoformat()
+    jobs.update_one({"_id": ObjectId(job_id)}, {"$set": payload})
+    job = jobs.find_one({"_id": ObjectId(job_id)})
+    if not job:
+        return jsonify({"error": "Job not found"}), 404
+    return jsonify(serialize_document(job)), 200
+
+
+@app.route("/jobs/<job_id>", methods=["DELETE"])
+@login_required
+def delete_job(job_id):
+    result = jobs.delete_one({"_id": ObjectId(job_id)})
+    if result.deleted_count == 1:
+        return jsonify({"message": "Job deleted"}), 200
+    return jsonify({"error": "Job not found"}), 404
+
+
 @app.route('/updateCandidate/<id>', methods=['PUT'])
 def update_candidate(id):
     data = request.json  
     
     if "_id" in data:
         data.pop("_id")
+    data["updated_at"] = datetime.utcnow().isoformat()
 
  
     updated_candidate = candidates.find_one_and_update(

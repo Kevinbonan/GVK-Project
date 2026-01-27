@@ -6,6 +6,8 @@ function Navbar() {
     { name: "הוסף מועמד חדש", link: "/addCandidate" },
     { name: "התנתק", link: "/logout" },
     { name: "כל המועמדים", link: "/allCandidates" },
+    { name: "Pipeline", link: "/pipeline" },
+    { name: "Jobs", link: "/jobs" },
   ];
 
   function getCurrentURL() {
