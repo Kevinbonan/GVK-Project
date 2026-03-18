@@ -10,6 +10,12 @@ from datetime import datetime
 import pandas as pd
 import io
 import xlsxwriter
+from werkzeug.utils import secure_filename
+
+try:
+    from pypdf import PdfReader
+except ImportError:
+    PdfReader = None
 
 
 app = Flask(__name__)
@@ -40,6 +46,8 @@ status_history = db.status_history
 
 
 app.secret_key = os.urandom(24)
+UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), "uploads")
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
 
@@ -82,6 +90,53 @@ def add_status_history(candidate_id, from_status, to_status, changed_by):
             "changed_by": changed_by,
         }
     )
+
+
+def parse_keywords(keywords):
+    if isinstance(keywords, list):
+        values = keywords
+    else:
+        values = str(keywords or "").split(",")
+    cleaned_keywords = []
+    seen = set()
+    for keyword in values:
+        normalized = str(keyword).strip()
+        lowered = normalized.lower()
+        if normalized and lowered not in seen:
+            cleaned_keywords.append(normalized)
+            seen.add(lowered)
+    return cleaned_keywords
+
+
+def extract_text_from_pdf(file_path):
+    if PdfReader is None:
+        raise RuntimeError("PDF parsing library is not installed")
+
+    reader = PdfReader(file_path)
+    pages_text = []
+    for page in reader.pages:
+        pages_text.append(page.extract_text() or "")
+    return "\n".join(pages_text)
+
+
+def analyze_cv_text(cv_text, keywords):
+    normalized_text = cv_text.lower()
+    matched_keywords = []
+    missing_keywords = []
+
+    for keyword in keywords:
+        if keyword.lower() in normalized_text:
+            matched_keywords.append(keyword)
+        else:
+            missing_keywords.append(keyword)
+
+    score = round((len(matched_keywords) / len(keywords)) * 100, 2) if keywords else 0
+    return {
+        "matched_keywords": matched_keywords,
+        "missing_keywords": missing_keywords,
+        "match_score": score,
+        "is_match": len(matched_keywords) > 0 and len(missing_keywords) == 0,
+    }
 
 
 
@@ -286,6 +341,7 @@ def create_job():
         "department": payload.get("department"),
         "location": payload.get("location"),
         "status": payload.get("status", "open"),
+        "keywords": parse_keywords(payload.get("keywords", [])),
         "created_at": datetime.utcnow().isoformat(),
         "updated_at": datetime.utcnow().isoformat(),
     }
@@ -305,6 +361,8 @@ def list_jobs():
 @login_required
 def update_job(job_id):
     payload = request.json or {}
+    if "keywords" in payload:
+        payload["keywords"] = parse_keywords(payload.get("keywords"))
     payload["updated_at"] = datetime.utcnow().isoformat()
     jobs.update_one({"_id": ObjectId(job_id)}, {"$set": payload})
     job = jobs.find_one({"_id": ObjectId(job_id)})
@@ -370,6 +428,77 @@ def export_candidates():
     
 
     return send_file(output, as_attachment=True, download_name='candidates.xlsx', mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+
+
+@app.route("/candidates/<candidate_id>/analyze-cv", methods=["POST"])
+@login_required
+def analyze_candidate_cv(candidate_id):
+    candidate = candidates.find_one({"_id": ObjectId(candidate_id)})
+    if not candidate:
+        return jsonify({"error": "Candidate not found"}), 404
+
+    if "cv" not in request.files:
+        return jsonify({"error": "Missing PDF file"}), 400
+
+    uploaded_file = request.files["cv"]
+    if not uploaded_file or uploaded_file.filename == "":
+        return jsonify({"error": "Missing PDF file"}), 400
+
+    if not uploaded_file.filename.lower().endswith(".pdf"):
+        return jsonify({"error": "Only PDF files are supported"}), 400
+
+    job_id = request.form.get("job_id")
+    if not job_id:
+        return jsonify({"error": "Missing job selection"}), 400
+
+    job = jobs.find_one({"_id": ObjectId(job_id)})
+    if not job:
+        return jsonify({"error": "Job not found"}), 404
+
+    keywords = parse_keywords(job.get("keywords", []))
+    if not keywords:
+        return jsonify({"error": "This job has no keywords configured"}), 400
+
+    safe_name = secure_filename(uploaded_file.filename)
+    timestamp = datetime.utcnow().strftime("%Y%m%d%H%M%S")
+    stored_filename = f"{candidate_id}_{timestamp}_{safe_name}"
+    stored_path = os.path.join(UPLOAD_FOLDER, stored_filename)
+    uploaded_file.save(stored_path)
+
+    try:
+        extracted_text = extract_text_from_pdf(stored_path)
+    except RuntimeError:
+        return jsonify(
+            {"error": "PDF analysis dependency is missing. Install 'pypdf' in the backend environment."}
+        ), 500
+    except Exception:
+        return jsonify({"error": "Unable to read the PDF content"}), 400
+
+    analysis = analyze_cv_text(extracted_text, keywords)
+    analysis_payload = {
+        "job_id": str(job["_id"]),
+        "job_title": job.get("title"),
+        "keywords": keywords,
+        "matched_keywords": analysis["matched_keywords"],
+        "missing_keywords": analysis["missing_keywords"],
+        "match_score": analysis["match_score"],
+        "is_match": analysis["is_match"],
+        "cv_filename": safe_name,
+        "analyzed_at": datetime.utcnow().isoformat(),
+        "analyzed_by": current_user.username,
+    }
+
+    candidates.update_one(
+        {"_id": ObjectId(candidate_id)},
+        {
+            "$set": {
+                "cv_analysis": analysis_payload,
+                "updated_at": datetime.utcnow().isoformat(),
+            }
+        },
+    )
+
+    return jsonify(analysis_payload), 200
 
         
 
