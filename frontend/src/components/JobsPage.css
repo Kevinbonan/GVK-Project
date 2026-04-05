@@ -18,10 +18,16 @@
 }
 
 .job-form input,
-.job-form select {
+.job-form select,
+.job-form textarea {
   padding: 8px;
   border-radius: 6px;
   border: 1px solid #d4d4d4;
+}
+
+.job-form textarea {
+  min-height: 90px;
+  resize: vertical;
 }
 
 .job-form button {
@@ -60,4 +66,9 @@
   padding: 6px 10px;
   border-radius: 6px;
   cursor: pointer;
+}
+
+.job-keywords {
+  color: #4b5563;
+  margin-top: 8px;
 }

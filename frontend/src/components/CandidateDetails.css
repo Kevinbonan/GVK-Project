@@ -56,3 +56,15 @@
   border-radius: 8px;
   margin-bottom: 8px;
 }
+
+.analysis-message {
+  margin-top: 12px;
+  color: #1f2937;
+}
+
+.analysis-card {
+  background: #f8f9fb;
+  padding: 12px;
+  border-radius: 10px;
+  margin-top: 12px;
+}

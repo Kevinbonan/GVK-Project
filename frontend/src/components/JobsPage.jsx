@@ -11,6 +11,8 @@ function JobsPage() {
     department: "",
     location: "",
     status: "open",
+    keywords: "",
+    match_threshold: 60,
   });
 
   const fetchJobs = async () => {
@@ -39,6 +41,8 @@ function JobsPage() {
       department: "",
       location: "",
       status: "open",
+      keywords: "",
+      match_threshold: 60,
     });
     fetchJobs();
   };
@@ -88,6 +92,21 @@ function JobsPage() {
             <option value="open">Open</option>
             <option value="closed">Closed</option>
           </select>
+          <textarea
+            name="keywords"
+            placeholder="Keywords (comma separated)"
+            value={formData.keywords}
+            onChange={handleChange}
+          />
+          <input
+            name="match_threshold"
+            type="number"
+            min="0"
+            max="100"
+            placeholder="Minimum match percentage"
+            value={formData.match_threshold}
+            onChange={handleChange}
+          />
           <button type="submit">Add Job</button>
         </form>
 
@@ -99,6 +118,12 @@ function JobsPage() {
                 <strong>{job.title}</strong>
                 <p>{job.department}</p>
                 <p>{job.location}</p>
+                <p className="job-keywords">
+                  Keywords: {(job.keywords || []).join(", ") || "None"}
+                </p>
+                <p className="job-keywords">
+                  Threshold: {job.match_threshold ?? 60}%
+                </p>
               </div>
               <div className="job-actions">
                 <select

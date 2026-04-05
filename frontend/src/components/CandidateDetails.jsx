@@ -19,6 +19,11 @@ function CandidateDetails() {
   const [candidate, setCandidate] = useState(null);
   const [history, setHistory] = useState([]);
   const [interviews, setInterviews] = useState([]);
+  const [jobs, setJobs] = useState([]);
+  const [selectedJobId, setSelectedJobId] = useState("");
+  const [cvFile, setCvFile] = useState(null);
+  const [analysisMessage, setAnalysisMessage] = useState("");
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [interviewForm, setInterviewForm] = useState({
     type: "HR Interview",
     date: "",
@@ -48,10 +53,18 @@ function CandidateDetails() {
     setInterviews(response.data);
   };
 
+  const fetchJobs = async () => {
+    const response = await axios.get(`${BASE_URL}/jobs`, {
+      withCredentials: true,
+    });
+    setJobs(response.data);
+  };
+
   useEffect(() => {
     fetchCandidate();
     fetchHistory();
     fetchInterviews();
+    fetchJobs();
   }, [id]);
 
   const updateStatus = async (event) => {
@@ -87,6 +100,40 @@ function CandidateDetails() {
     fetchInterviews();
   };
 
+  const submitCvAnalysis = async (event) => {
+    event.preventDefault();
+    if (!selectedJobId || !cvFile) {
+      setAnalysisMessage("Please select a job and upload a PDF CV.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("job_id", selectedJobId);
+    formData.append("cv", cvFile);
+
+    setIsAnalyzing(true);
+    setAnalysisMessage("");
+
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/candidates/${id}/analyze-cv`,
+        formData,
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      setCandidate((prev) => ({ ...prev, cv_analysis: response.data }));
+      setAnalysisMessage("CV analyzed successfully.");
+    } catch (error) {
+      setAnalysisMessage(
+        error.response?.data?.error || "CV analysis failed."
+      );
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
   if (!candidate) {
     return (
       <div className="candidate-details-page">
@@ -100,8 +147,8 @@ function CandidateDetails() {
     <div className="candidate-details-page">
       <Navbar />
       <div className="candidate-card">
-        <h2>{candidate["שם"] || candidate.fullName}</h2>
-        <p>Role: {candidate["תפקיד"] || candidate.jobTitle}</p>
+        <h2>{candidate["×©×"] || candidate.fullName}</h2>
+        <p>Role: {candidate["×ª×¤×§×™×“"] || candidate.jobTitle}</p>
         <p>Email: {candidate.email || "N/A"}</p>
         <p>Phone: {candidate.phone || "N/A"}</p>
         <label>
@@ -171,10 +218,69 @@ function CandidateDetails() {
           <ul className="history-list">
             {history.map((item) => (
               <li key={item._id}>
-                {item.from_status} → {item.to_status} ({item.changed_at})
+                {item.from_status} to {item.to_status} ({item.changed_at})
               </li>
             ))}
           </ul>
+        </section>
+
+        <section>
+          <h3>CV Match Analysis</h3>
+          <form className="interview-form" onSubmit={submitCvAnalysis}>
+            <select
+              value={selectedJobId}
+              onChange={(event) => setSelectedJobId(event.target.value)}
+            >
+              <option value="">Select job</option>
+              {jobs.map((job) => (
+                <option key={job._id} value={job._id}>
+                  {job.title} ({job.match_threshold || 60}%)
+                </option>
+              ))}
+            </select>
+            <input
+              type="file"
+              accept="application/pdf"
+              onChange={(event) => setCvFile(event.target.files?.[0] || null)}
+            />
+            <button type="submit" disabled={isAnalyzing}>
+              {isAnalyzing ? "Analyzing..." : "Analyze CV"}
+            </button>
+          </form>
+
+          {analysisMessage ? (
+            <p className="analysis-message">{analysisMessage}</p>
+          ) : null}
+
+          {candidate.cv_analysis ? (
+            <div className="analysis-card">
+              <p>
+                <strong>Job:</strong> {candidate.cv_analysis.job_title}
+              </p>
+              <p>
+                <strong>Score:</strong> {candidate.cv_analysis.match_score}%
+              </p>
+              <p>
+                <strong>Required threshold:</strong>{" "}
+                {candidate.cv_analysis.match_threshold}%
+              </p>
+              <p>
+                <strong>First screening:</strong>{" "}
+                {candidate.cv_analysis.is_match ? "Accepted" : "Rejected"}
+              </p>
+              <p>
+                <strong>Matched keywords:</strong>{" "}
+                {candidate.cv_analysis.matched_keywords?.join(", ") || "None"}
+              </p>
+              <p>
+                <strong>Missing keywords:</strong>{" "}
+                {candidate.cv_analysis.missing_keywords?.join(", ") || "None"}
+              </p>
+              <p>
+                <strong>File:</strong> {candidate.cv_analysis.cv_filename}
+              </p>
+            </div>
+          ) : null}
         </section>
       </div>
     </div>

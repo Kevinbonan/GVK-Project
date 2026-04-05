@@ -108,6 +108,13 @@ def parse_keywords(keywords):
     return cleaned_keywords
 
 
+def parse_threshold(value, default=60):
+    try:
+        return max(0, min(100, int(value)))
+    except (TypeError, ValueError):
+        return default
+
+
 def extract_text_from_pdf(file_path):
     if PdfReader is None:
         raise RuntimeError("PDF parsing library is not installed")
@@ -135,7 +142,6 @@ def analyze_cv_text(cv_text, keywords):
         "matched_keywords": matched_keywords,
         "missing_keywords": missing_keywords,
         "match_score": score,
-        "is_match": len(matched_keywords) > 0 and len(missing_keywords) == 0,
     }
 
 
@@ -336,12 +342,14 @@ def list_history(candidate_id):
 @login_required
 def create_job():
     payload = request.json or {}
+    threshold = parse_threshold(payload.get("match_threshold", 60))
     job = {
         "title": payload.get("title"),
         "department": payload.get("department"),
         "location": payload.get("location"),
         "status": payload.get("status", "open"),
         "keywords": parse_keywords(payload.get("keywords", [])),
+        "match_threshold": threshold,
         "created_at": datetime.utcnow().isoformat(),
         "updated_at": datetime.utcnow().isoformat(),
     }
@@ -363,6 +371,8 @@ def update_job(job_id):
     payload = request.json or {}
     if "keywords" in payload:
         payload["keywords"] = parse_keywords(payload.get("keywords"))
+    if "match_threshold" in payload:
+        payload["match_threshold"] = parse_threshold(payload.get("match_threshold", 60))
     payload["updated_at"] = datetime.utcnow().isoformat()
     jobs.update_one({"_id": ObjectId(job_id)}, {"$set": payload})
     job = jobs.find_one({"_id": ObjectId(job_id)})
@@ -458,6 +468,7 @@ def analyze_candidate_cv(candidate_id):
     keywords = parse_keywords(job.get("keywords", []))
     if not keywords:
         return jsonify({"error": "This job has no keywords configured"}), 400
+    threshold = parse_threshold(job.get("match_threshold", 60))
 
     safe_name = secure_filename(uploaded_file.filename)
     timestamp = datetime.utcnow().strftime("%Y%m%d%H%M%S")
@@ -482,7 +493,8 @@ def analyze_candidate_cv(candidate_id):
         "matched_keywords": analysis["matched_keywords"],
         "missing_keywords": analysis["missing_keywords"],
         "match_score": analysis["match_score"],
-        "is_match": analysis["is_match"],
+        "match_threshold": threshold,
+        "is_match": analysis["match_score"] >= threshold,
         "cv_filename": safe_name,
         "analyzed_at": datetime.utcnow().isoformat(),
         "analyzed_by": current_user.username,
