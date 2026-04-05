@@ -1,74 +1,97 @@
 .jobs-page {
-  padding: 16px;
+  padding-bottom: 32px;
+}
+
+.jobs-shell {
+  padding-top: 16px;
 }
 
 .jobs-layout {
   display: grid;
-  gap: 20px;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: minmax(320px, 380px) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
 }
 
 .job-form {
-  background: #fff;
-  padding: 16px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   display: grid;
-  gap: 10px;
+  gap: 14px;
+  padding: 24px;
 }
 
-.job-form input,
-.job-form select,
-.job-form textarea {
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #d4d4d4;
+.job-form h3,
+.jobs-list h3 {
+  margin-bottom: 8px;
+  font-size: 1.35rem;
 }
 
-.job-form textarea {
-  min-height: 90px;
-  resize: vertical;
-}
-
-.job-form button {
-  background: #1a237e;
-  color: #fff;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
+.job-form p {
+  color: var(--text-secondary);
+  line-height: 1.6;
 }
 
 .jobs-list {
   display: grid;
-  gap: 12px;
+  gap: 16px;
 }
 
 .job-card {
-  background: #f8f9fb;
-  padding: 12px;
-  border-radius: 10px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  gap: 18px;
+  padding: 22px;
 }
 
-.job-actions {
+.job-card-main {
+  min-width: 0;
+}
+
+.job-card-top {
   display: flex;
-  gap: 8px;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
 }
 
-.job-actions button {
-  background: #d32f2f;
-  color: #fff;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 6px;
-  cursor: pointer;
+.job-card strong {
+  font-size: 1.1rem;
+}
+
+.job-card p {
+  margin-bottom: 8px;
+  color: var(--text-secondary);
 }
 
 .job-keywords {
-  color: #4b5563;
-  margin-top: 8px;
+  line-height: 1.6;
+}
+
+.job-actions {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  min-width: 160px;
+}
+
+/* Reuse the same button style for destructive actions to keep consistency. */
+.danger-action {
+  background: linear-gradient(135deg, #9f3842 0%, var(--error) 100%);
+}
+
+@media (max-width: 980px) {
+  .jobs-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .job-card {
+    flex-direction: column;
+  }
+
+  .job-actions {
+    min-width: 0;
+  }
 }

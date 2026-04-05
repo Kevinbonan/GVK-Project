@@ -1,25 +1,24 @@
 .candidate-summary-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border-radius: 8px;
+  display: grid;
+  gap: 18px;
 }
 
 .candidate-summary-list {
-  list-style-type: none;
-  padding: 0;
-  border: 1px solid #cccccc;
-  padding: 0px 5px;
-  border-radius: 8px;
-  width: 100%;
+  list-style: none;
+  margin: 0;
+  padding: 10px;
+  border: 1px solid rgba(214, 224, 231, 0.84);
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(247, 250, 252, 0.96));
 }
 
 .candidate-summary-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid #cccccc;
-  font-size: 16px;
+  display: grid;
+  grid-template-columns: minmax(160px, 220px) 1fr;
+  gap: 16px;
+  padding: 16px;
+  border-bottom: 1px solid rgba(214, 224, 231, 0.78);
+  font-size: 0.96rem;
 }
 
 .candidate-summary-item:last-child {
@@ -27,14 +26,19 @@
 }
 
 .candidate-summary-label {
-  font-weight: bold;
-  color: #333333;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.78rem;
 }
 
 .candidate-summary-value {
-  color: #555555;
+  color: var(--text-primary);
+  font-weight: 600;
 }
 
-.login-page {
-  width: 100%;
+@media (max-width: 640px) {
+  .candidate-summary-item {
+    grid-template-columns: 1fr;
+  }
 }

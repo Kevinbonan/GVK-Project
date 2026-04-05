@@ -23,7 +23,11 @@ function ExportButton() {
     }
   };
 
-  return <button onClick={handleExport}>אקסל</button>;
+  return (
+    <button className="secondary-action" onClick={handleExport}>
+      Export Excel
+    </button>
+  );
 }
 
 export default ExportButton;

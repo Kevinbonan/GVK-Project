@@ -1,88 +1,164 @@
 .login-page {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f5f5f5;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 28px;
 }
 
+.login-grid {
+  width: min(1180px, 100%);
+  display: grid;
+  grid-template-columns: minmax(320px, 1.1fr) minmax(360px, 0.9fr);
+  gap: 28px;
+  align-items: stretch;
+}
+
+.login-intro,
 .login-container {
-  width: 400px;
-  padding: 40px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(214, 224, 231, 0.84);
+  border-radius: 28px;
+  box-shadow: var(--shadow-soft);
+}
+
+.login-intro {
+  padding: 42px;
+  color: #fff;
+  background:
+    linear-gradient(135deg, rgba(8, 28, 46, 0.96) 0%, rgba(15, 60, 99, 0.94) 54%, rgba(22, 89, 143, 0.92) 100%);
+}
+
+.login-intro::after {
+  content: "";
+  position: absolute;
+  inset: auto -120px -140px auto;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(47, 190, 203, 0.34) 0%, transparent 70%);
 }
 
 .logo {
-  display: block;
-  margin: 0 auto 30px;
-  width: 190px;
+  width: 158px;
+  margin-bottom: 28px;
 }
 
-.error-message {
-  display: inline-block;
-  color: #ff0000;
-  text-align: center;
-  font-weight: bold;
-  background-color: #ffdfdf;
+.login-intro h1 {
+  max-width: 11ch;
+  margin-bottom: 16px;
+  font-size: clamp(2.4rem, 4vw, 4rem);
+  line-height: 0.95;
+  letter-spacing: -0.05em;
 }
-.error-div {
-  text-align: center;
-  height: 53px;
+
+.login-intro p {
+  max-width: 52ch;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.75;
 }
-.bottom-div {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+
+.login-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 40px;
+}
+
+.login-metric {
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(8px);
+}
+
+.login-metric strong {
+  display: block;
+  font-size: 1.35rem;
+}
+
+.login-metric span {
+  display: block;
+  margin-top: 4px;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 0.9rem;
+}
+
+.login-container {
+  padding: 38px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(244, 248, 250, 0.95) 100%);
+}
+
+.login-panel-header h2 {
+  margin-bottom: 8px;
+  font-size: 1.9rem;
+  letter-spacing: -0.03em;
+}
+
+.login-panel-header p {
+  color: var(--text-secondary);
+  line-height: 1.6;
 }
 
 .login-form {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  gap: 18px;
+  margin-top: 30px;
 }
 
 .form-group {
-  text-align: center;
-  padding-bottom: 8px;
-}
-.checkbox-group,
-label {
-  display: flex;
-  align-items: center;
-  margin-right: 20px;
+  display: grid;
+  gap: 8px;
 }
 
-label {
-  font-weight: bold;
-  margin-bottom: 8px;
-  color: #333333;
+.field-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
-.form-textarea,
-.form-input {
-  width: 80%;
-  padding: 12px;
-  border: 1px solid #cccccc;
-  border-radius: 4px;
-  font-size: 16px;
-  margin-top: 8px;
+
+.error-div {
+  min-height: 48px;
 }
-.form-textarea {
-  resize: vertical;
-  height: 100px;
+
+.bottom-div {
+  display: flex;
 }
 
 .login-button {
-  padding: 12px;
-  background-color: #007bff;
-  color: #ffffff;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  width: 100%;
+  min-height: 52px;
 }
 
-.login-button:hover {
-  background-color: #0056b3;
+.card-shell h2 {
+  margin: 0;
+  font-size: 1.6rem;
+  letter-spacing: -0.03em;
+}
+
+@media (max-width: 960px) {
+  .login-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .login-intro h1 {
+    max-width: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .login-page {
+    padding: 16px;
+  }
+
+  .login-intro,
+  .login-container {
+    padding: 24px;
+    border-radius: 22px;
+  }
+
+  .login-metrics {
+    grid-template-columns: 1fr;
+  }
 }

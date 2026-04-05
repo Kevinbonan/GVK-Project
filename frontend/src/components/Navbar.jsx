@@ -1,33 +1,43 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import gvkLogo from "../assets/gvk-logo.png";
 import "./Navbar.css";
 
 function Navbar() {
   const linksList = [
-    { name: "הוסף מועמד חדש", link: "/addCandidate" },
-    { name: "התנתק", link: "/logout" },
-    { name: "כל המועמדים", link: "/allCandidates" },
+    { name: "Add Candidate", link: "/addCandidate" },
+    { name: "Candidates", link: "/allCandidates" },
     { name: "Pipeline", link: "/pipeline" },
     { name: "Jobs", link: "/jobs" },
+    { name: "Logout", link: "/logout" },
   ];
 
-  function getCurrentURL() {
-    return window.location.pathname;
-  }
-
-  const currentURL = getCurrentURL();
-
   return (
-    <nav className="navbar">
-      <ul className="navbar-list">
-        {linksList
-          .filter((item) => item.link !== currentURL)
-          .map((item, index) => (
-            <li className="navbar-item" key={index}>
-              <Link to={item.link}>{item.name}</Link>
+    <header className="navbar-shell">
+      <nav className="navbar page-shell">
+        <div className="navbar-brand">
+          <img src={gvkLogo} alt="GVK Logo" className="navbar-logo" />
+          <div>
+            <strong>GVK Talent Operations</strong>
+            <span>Industrial recruitment control center</span>
+          </div>
+        </div>
+
+        <ul className="navbar-list">
+          {linksList.map((item) => (
+            <li className="navbar-item" key={item.link}>
+              <NavLink
+                to={item.link}
+                className={({ isActive }) =>
+                  isActive ? "navbar-link navbar-link-active" : "navbar-link"
+                }
+              >
+                {item.name}
+              </NavLink>
             </li>
           ))}
-      </ul>
-    </nav>
+        </ul>
+      </nav>
+    </header>
   );
 }
 

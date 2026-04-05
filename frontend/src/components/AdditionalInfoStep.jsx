@@ -12,10 +12,10 @@ function AdditionalInfoStep({ children, candidate, setCandidate }) {
   return (
     <div className="additional-info-step">
       <label>
-        מידע נוסף:
+        Additional Information
         <textarea
-          name="מידע נוסף"
-          value={candidate["מידע נוסף"]}
+          name="×ž×™×“×¢ × ×•×¡×£"
+          value={candidate["×ž×™×“×¢ × ×•×¡×£"]}
           onChange={handleChange}
           className="form-textarea"
         />

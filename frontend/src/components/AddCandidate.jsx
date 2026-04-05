@@ -17,24 +17,23 @@ function AddCandidate() {
   const today = new Date().toISOString().split("T")[0];
   const [isSummary, setIsSummary] = useState(false);
   const [candidate, setCandidate] = useState({
-    שם: "",
-    תפקיד: "",
-    "סיכום שיחת טלפון": "",
-    "תאריך שיחת טלפון": today,
-    "סיכום ריאיון": "",
-    "שנות ניסיון": 0,
-    "סיווג ביטחוני": false,
-    בטיחות: false,
+    ×©×: "",
+    ×ª×¤×§×™×“: "",
+    "×¡×™×›×•× ×©×™×—×ª ×˜×œ×¤×•×Ÿ": "",
+    "×ª××¨×™×š ×©×™×—×ª ×˜×œ×¤×•×Ÿ": today,
+    "×¡×™×›×•× ×¨×™××™×•×Ÿ": "",
+    "×©× ×•×ª × ×™×¡×™×•×Ÿ": 0,
+    "×¡×™×•×•×’ ×‘×™×˜×—×•× ×™": false,
+    ×‘×˜×™×—×•×ª: false,
     "'101'": false,
-    "תאריך ריאיון": today,
-    ציון: 0,
-    "ניסיון בשטח": "",
-    "מידע נוסף": "",
+    "×ª××¨×™×š ×¨×™××™×•×Ÿ": today,
+    ×¦×™×•×Ÿ: 0,
+    "× ×™×¡×™×•×Ÿ ×‘×©×˜×—": "",
+    "×ž×™×“×¢ × ×•×¡×£": "",
   });
 
   const [step, setStep] = useState(1);
   const totalSteps = 4;
-
   const navigate = useNavigate();
 
   const handleNext = () => {
@@ -137,7 +136,7 @@ function AddCandidate() {
       const response = await axios.post(
         BASE_URL + "/insert_candidate",
         {
-          candidate: candidate,
+          candidate,
         },
         {
           withCredentials: true,
@@ -145,7 +144,6 @@ function AddCandidate() {
       );
 
       if (response.status === 200) {
-        alert(response.data.message);
         navigate("/allCandidates");
       } else {
         alert(response.data.message);
@@ -156,11 +154,26 @@ function AddCandidate() {
   };
 
   return (
-    <CardContainer>
+    <>
       <Navbar />
-      {!isSummary && <ProgressBar step={step} totalSteps={totalSteps} />}
-      {isSummary ? showSummaryPage() : renderStep()}
-    </CardContainer>
+      <CardContainer>
+        <div className="candidate-flow-header">
+          <div>
+            <div className="eyebrow">Candidate Intake</div>
+            <h1>{isSummary ? "Review candidate profile" : "Add a new candidate"}</h1>
+            <p>
+              A guided workflow for collecting technical, operational and
+              interview information in a clear and consistent format.
+            </p>
+          </div>
+          <div className="status-pill">
+            Step {isSummary ? totalSteps : step} / {totalSteps}
+          </div>
+        </div>
+        {!isSummary && <ProgressBar step={step} totalSteps={totalSteps} />}
+        {isSummary ? showSummaryPage() : renderStep()}
+      </CardContainer>
+    </>
   );
 }
 

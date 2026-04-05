@@ -66,83 +66,108 @@ function JobsPage() {
   return (
     <div className="jobs-page">
       <Navbar />
-      <div className="jobs-layout">
-        <form className="job-form" onSubmit={addJob}>
-          <h3>Create Job</h3>
-          <input
-            name="title"
-            placeholder="Title"
-            value={formData.title}
-            onChange={handleChange}
-            required
-          />
-          <input
-            name="department"
-            placeholder="Department"
-            value={formData.department}
-            onChange={handleChange}
-          />
-          <input
-            name="location"
-            placeholder="Location"
-            value={formData.location}
-            onChange={handleChange}
-          />
-          <select name="status" value={formData.status} onChange={handleChange}>
-            <option value="open">Open</option>
-            <option value="closed">Closed</option>
-          </select>
-          <textarea
-            name="keywords"
-            placeholder="Keywords (comma separated)"
-            value={formData.keywords}
-            onChange={handleChange}
-          />
-          <input
-            name="match_threshold"
-            type="number"
-            min="0"
-            max="100"
-            placeholder="Minimum match percentage"
-            value={formData.match_threshold}
-            onChange={handleChange}
-          />
-          <button type="submit">Add Job</button>
-        </form>
+      <main className="page-shell jobs-shell">
+        <section className="page-header">
+          <div>
+            <div className="eyebrow">Position Configuration</div>
+            <h1>Jobs and matching rules</h1>
+            <p>
+              Configure openings, keyword expectations and first-screening
+              thresholds to support a more consistent CV triage process.
+            </p>
+          </div>
+          <span className="status-pill">{jobs.length} configured jobs</span>
+        </section>
 
-        <div className="jobs-list">
-          <h3>Open Positions</h3>
-          {jobs.map((job) => (
-            <div key={job._id} className="job-card">
-              <div>
-                <strong>{job.title}</strong>
-                <p>{job.department}</p>
-                <p>{job.location}</p>
-                <p className="job-keywords">
-                  Keywords: {(job.keywords || []).join(", ") || "None"}
-                </p>
-                <p className="job-keywords">
-                  Threshold: {job.match_threshold ?? 60}%
-                </p>
-              </div>
-              <div className="job-actions">
-                <select
-                  value={job.status || "open"}
-                  onChange={(event) =>
-                    updateJobStatus(job._id, event.target.value)
-                  }
-                >
-                  <option value="open">Open</option>
-                  <option value="closed">Closed</option>
-                </select>
-                <button type="button" onClick={() => deleteJob(job._id)}>
-                  Delete
-                </button>
-              </div>
+        <div className="jobs-layout">
+          <form className="job-form section-card" onSubmit={addJob}>
+            <div>
+              <div className="eyebrow">New Job</div>
+              <h3>Create a role profile</h3>
+              <p>
+                Define the position metadata and the keyword logic used for the
+                first CV screening pass.
+              </p>
             </div>
-          ))}
+            <input
+              name="title"
+              placeholder="Title"
+              value={formData.title}
+              onChange={handleChange}
+              required
+            />
+            <input
+              name="department"
+              placeholder="Department"
+              value={formData.department}
+              onChange={handleChange}
+            />
+            <input
+              name="location"
+              placeholder="Location"
+              value={formData.location}
+              onChange={handleChange}
+            />
+            <select name="status" value={formData.status} onChange={handleChange}>
+              <option value="open">Open</option>
+              <option value="closed">Closed</option>
+            </select>
+            <textarea
+              name="keywords"
+              placeholder="Keywords separated by commas"
+              value={formData.keywords}
+              onChange={handleChange}
+            />
+            <input
+              name="match_threshold"
+              type="number"
+              min="0"
+              max="100"
+              placeholder="Minimum match percentage"
+              value={formData.match_threshold}
+              onChange={handleChange}
+            />
+            <button type="submit">Create Job</button>
+          </form>
+
+          <div className="jobs-list">
+            {jobs.map((job) => (
+              <article key={job._id} className="job-card section-card">
+                <div className="job-card-main">
+                  <div className="job-card-top">
+                    <strong>{job.title}</strong>
+                    <span className="status-pill">{job.status || "open"}</span>
+                  </div>
+                  <p>{job.department || "No department specified"}</p>
+                  <p>{job.location || "No location specified"}</p>
+                  <p className="job-keywords">
+                    Keywords: {(job.keywords || []).join(", ") || "None"}
+                  </p>
+                  <p className="job-keywords">
+                    Threshold: {job.match_threshold ?? 60}%
+                  </p>
+                </div>
+                <div className="job-actions">
+                  <select
+                    value={job.status || "open"}
+                    onChange={(event) => updateJobStatus(job._id, event.target.value)}
+                  >
+                    <option value="open">Open</option>
+                    <option value="closed">Closed</option>
+                  </select>
+                  <button
+                    type="button"
+                    className="danger-action"
+                    onClick={() => deleteJob(job._id)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

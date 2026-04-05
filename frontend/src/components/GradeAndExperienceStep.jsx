@@ -19,17 +19,17 @@ function GradeAndExperienceStep({ children, candidate, setCandidate }) {
     <div className="candidate-details-step">
       <div className="form-group">
         <label>
-          ציון:
+          Grade
           <select
-            name="ציון"
-            value={candidate.ציון}
+            name="×¦×™×•×Ÿ"
+            value={candidate.×¦×™×•×Ÿ}
             onChange={handleChange}
             className="form-input"
           >
-            <option value={0}>בחר ציון</option>
+            <option value={0}>Select grade</option>
             {listOfGrades.map((item, index) => (
               <option key={index} value={item}>
-                ציון {item}
+                Grade {item}
               </option>
             ))}
           </select>
@@ -37,10 +37,10 @@ function GradeAndExperienceStep({ children, candidate, setCandidate }) {
       </div>
       <div className="form-group">
         <label>
-          ניסיון בשטח:
+          Field Experience
           <textarea
-            name="ניסיון בשטח"
-            value={candidate["ניסיון בשטח"]}
+            name="× ×™×¡×™×•×Ÿ ×‘×©×˜×—"
+            value={candidate["× ×™×¡×™×•×Ÿ ×‘×©×˜×—"]}
             onChange={handleChange}
             className="form-textarea"
           />

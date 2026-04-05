@@ -138,7 +138,15 @@ function CandidateDetails() {
     return (
       <div className="candidate-details-page">
         <Navbar />
-        <p>Loading...</p>
+        <main className="page-shell candidate-details-shell">
+          <section className="page-header">
+            <div>
+              <div className="eyebrow">Candidate Profile</div>
+              <h1>Loading profile</h1>
+              <p>Fetching interview records, pipeline history and CV analysis data.</p>
+            </div>
+          </section>
+        </main>
       </div>
     );
   }
@@ -146,143 +154,168 @@ function CandidateDetails() {
   return (
     <div className="candidate-details-page">
       <Navbar />
-      <div className="candidate-card">
-        <h2>{candidate["×©×"] || candidate.fullName}</h2>
-        <p>Role: {candidate["×ª×¤×§×™×“"] || candidate.jobTitle}</p>
-        <p>Email: {candidate.email || "N/A"}</p>
-        <p>Phone: {candidate.phone || "N/A"}</p>
-        <label>
-          Status
-          <select value={candidate.status || "Applied"} onChange={updateStatus}>
-            {STATUSES.map((status) => (
-              <option key={status} value={status}>
-                {status}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-
-      <div className="candidate-sections">
-        <section>
-          <h3>Interview Notes</h3>
-          <form className="interview-form" onSubmit={submitInterview}>
-            <select
-              name="type"
-              value={interviewForm.type}
-              onChange={handleInterviewChange}
-            >
-              <option value="HR Interview">HR Interview</option>
-              <option value="Technical Interview">Technical Interview</option>
-            </select>
-            <input
-              name="date"
-              type="date"
-              value={interviewForm.date}
-              onChange={handleInterviewChange}
-            />
-            <input
-              name="interviewer"
-              type="text"
-              placeholder="Interviewer"
-              value={interviewForm.interviewer}
-              onChange={handleInterviewChange}
-            />
-            <input
-              name="score"
-              type="number"
-              placeholder="Score"
-              value={interviewForm.score}
-              onChange={handleInterviewChange}
-            />
-            <textarea
-              name="notes"
-              placeholder="Notes"
-              value={interviewForm.notes}
-              onChange={handleInterviewChange}
-            />
-            <button type="submit">Add Interview</button>
-          </form>
-          <ul className="interview-list">
-            {interviews.map((interview) => (
-              <li key={interview._id}>
-                <strong>{interview.type}</strong> - {interview.date}
-                <p>{interview.notes}</p>
-              </li>
-            ))}
-          </ul>
+      <main className="page-shell candidate-details-shell">
+        <section className="page-header">
+          <div>
+            <div className="eyebrow">Candidate Profile</div>
+            <h1>{candidate["Ã—Â©Ã—Â"] || candidate.fullName || "Candidate details"}</h1>
+            <p>
+              Detailed recruitment record combining operational status,
+              interview notes and automated CV screening.
+            </p>
+          </div>
+          <span className="status-pill">{candidate.status || "Applied"}</span>
         </section>
 
-        <section>
-          <h3>Status History</h3>
-          <ul className="history-list">
-            {history.map((item) => (
-              <li key={item._id}>
-                {item.from_status} to {item.to_status} ({item.changed_at})
-              </li>
-            ))}
-          </ul>
+        <section className="candidate-card">
+          <div className="candidate-card-meta">
+            <p>
+              <strong>Role:</strong> {candidate["Ã—ÂªÃ—Â¤Ã—Â§Ã—â„¢Ã—â€œ"] || candidate.jobTitle || "N/A"}
+            </p>
+            <p>
+              <strong>Email:</strong> {candidate.email || "N/A"}
+            </p>
+            <p>
+              <strong>Phone:</strong> {candidate.phone || "N/A"}
+            </p>
+          </div>
+
+          <div className="candidate-card-status">
+            <span className="status-pill">Operational status</span>
+            <label>
+              <span>Status</span>
+              <select value={candidate.status || "Applied"} onChange={updateStatus}>
+                {STATUSES.map((status) => (
+                  <option key={status} value={status}>
+                    {status}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
         </section>
 
-        <section>
-          <h3>CV Match Analysis</h3>
-          <form className="interview-form" onSubmit={submitCvAnalysis}>
-            <select
-              value={selectedJobId}
-              onChange={(event) => setSelectedJobId(event.target.value)}
-            >
-              <option value="">Select job</option>
-              {jobs.map((job) => (
-                <option key={job._id} value={job._id}>
-                  {job.title} ({job.match_threshold || 60}%)
-                </option>
+        <div className="candidate-sections">
+          <section>
+            <h3>Interview Notes</h3>
+            <form className="interview-form" onSubmit={submitInterview}>
+              <select
+                name="type"
+                value={interviewForm.type}
+                onChange={handleInterviewChange}
+              >
+                <option value="HR Interview">HR Interview</option>
+                <option value="Technical Interview">Technical Interview</option>
+              </select>
+              <input
+                name="date"
+                type="date"
+                value={interviewForm.date}
+                onChange={handleInterviewChange}
+              />
+              <input
+                name="interviewer"
+                type="text"
+                placeholder="Interviewer"
+                value={interviewForm.interviewer}
+                onChange={handleInterviewChange}
+              />
+              <input
+                name="score"
+                type="number"
+                placeholder="Score"
+                value={interviewForm.score}
+                onChange={handleInterviewChange}
+              />
+              <textarea
+                name="notes"
+                placeholder="Notes"
+                value={interviewForm.notes}
+                onChange={handleInterviewChange}
+              />
+              <button type="submit">Add Interview</button>
+            </form>
+            <ul className="interview-list">
+              {interviews.map((interview) => (
+                <li key={interview._id}>
+                  <strong>{interview.type}</strong> - {interview.date}
+                  <p>{interview.notes}</p>
+                </li>
               ))}
-            </select>
-            <input
-              type="file"
-              accept="application/pdf"
-              onChange={(event) => setCvFile(event.target.files?.[0] || null)}
-            />
-            <button type="submit" disabled={isAnalyzing}>
-              {isAnalyzing ? "Analyzing..." : "Analyze CV"}
-            </button>
-          </form>
+            </ul>
+          </section>
 
-          {analysisMessage ? (
-            <p className="analysis-message">{analysisMessage}</p>
-          ) : null}
+          <section>
+            <h3>Status History</h3>
+            <ul className="history-list">
+              {history.map((item) => (
+                <li key={item._id}>
+                  {item.from_status} to {item.to_status} ({item.changed_at})
+                </li>
+              ))}
+            </ul>
+          </section>
 
-          {candidate.cv_analysis ? (
-            <div className="analysis-card">
-              <p>
-                <strong>Job:</strong> {candidate.cv_analysis.job_title}
-              </p>
-              <p>
-                <strong>Score:</strong> {candidate.cv_analysis.match_score}%
-              </p>
-              <p>
-                <strong>Required threshold:</strong>{" "}
-                {candidate.cv_analysis.match_threshold}%
-              </p>
-              <p>
-                <strong>First screening:</strong>{" "}
-                {candidate.cv_analysis.is_match ? "Accepted" : "Rejected"}
-              </p>
-              <p>
-                <strong>Matched keywords:</strong>{" "}
-                {candidate.cv_analysis.matched_keywords?.join(", ") || "None"}
-              </p>
-              <p>
-                <strong>Missing keywords:</strong>{" "}
-                {candidate.cv_analysis.missing_keywords?.join(", ") || "None"}
-              </p>
-              <p>
-                <strong>File:</strong> {candidate.cv_analysis.cv_filename}
-              </p>
-            </div>
-          ) : null}
-        </section>
-      </div>
+          <section>
+            <h3>CV Match Analysis</h3>
+            <form className="interview-form" onSubmit={submitCvAnalysis}>
+              <select
+                value={selectedJobId}
+                onChange={(event) => setSelectedJobId(event.target.value)}
+              >
+                <option value="">Select job</option>
+                {jobs.map((job) => (
+                  <option key={job._id} value={job._id}>
+                    {job.title} ({job.match_threshold || 60}%)
+                  </option>
+                ))}
+              </select>
+              <input
+                type="file"
+                accept="application/pdf"
+                onChange={(event) => setCvFile(event.target.files?.[0] || null)}
+              />
+              <button type="submit" disabled={isAnalyzing}>
+                {isAnalyzing ? "Analyzing..." : "Analyze CV"}
+              </button>
+            </form>
+
+            {analysisMessage ? (
+              <p className="analysis-message">{analysisMessage}</p>
+            ) : null}
+
+            {candidate.cv_analysis ? (
+              <div className="analysis-card">
+                <p>
+                  <strong>Job:</strong> {candidate.cv_analysis.job_title}
+                </p>
+                <p>
+                  <strong>Score:</strong> {candidate.cv_analysis.match_score}%
+                </p>
+                <p>
+                  <strong>Required threshold:</strong>{" "}
+                  {candidate.cv_analysis.match_threshold}%
+                </p>
+                <p>
+                  <strong>First screening:</strong>{" "}
+                  {candidate.cv_analysis.is_match ? "Accepted" : "Rejected"}
+                </p>
+                <p>
+                  <strong>Matched keywords:</strong>{" "}
+                  {candidate.cv_analysis.matched_keywords?.join(", ") || "None"}
+                </p>
+                <p>
+                  <strong>Missing keywords:</strong>{" "}
+                  {candidate.cv_analysis.missing_keywords?.join(", ") || "None"}
+                </p>
+                <p>
+                  <strong>File:</strong> {candidate.cv_analysis.cv_filename}
+                </p>
+              </div>
+            ) : null}
+          </section>
+        </div>
+      </main>
     </div>
   );
 }

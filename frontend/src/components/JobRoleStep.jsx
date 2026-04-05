@@ -13,44 +13,44 @@ function JobRoleStep({ children, candidate, setCandidate }) {
     <div className="candidate-details-step">
       <div className="form-group">
         <label>
-          שם:
+          Full Name
           <input
             type="text"
-            name="שם"
+            name="×©×"
             className="form-input"
-            value={candidate.שם}
+            value={candidate.×©×}
             onChange={handleChange}
           />
         </label>
         <fieldset>
           <div className="radio">
             <label>
-              טכנאי
+              Technician
               <input
                 type="radio"
-                name="תפקיד"
-                value="טכנאי"
-                checked={candidate.תפקיד === "טכנאי"}
+                name="×ª×¤×§×™×“"
+                value="×˜×›× ××™"
+                checked={candidate.×ª×¤×§×™×“ === "×˜×›× ××™"}
                 onChange={handleChange}
-              ></input>
+              />
             </label>
             <label>
-              אחר
+              Other
               <input
                 type="radio"
-                name="תפקיד"
-                value="אחר"
-                checked={candidate.תפקיד === "אחר"}
+                name="×ª×¤×§×™×“"
+                value="××—×¨"
+                checked={candidate.×ª×¤×§×™×“ === "××—×¨"}
                 onChange={handleChange}
-              ></input>
+              />
             </label>
           </div>
         </fieldset>
         <label>
-          סיכום שיחת טלפון:
+          Phone Screening Summary
           <textarea
-            name="סיכום שיחת טלפון"
-            value={candidate["סיכום שיחת טלפון"]}
+            name="×¡×™×›×•× ×©×™×—×ª ×˜×œ×¤×•×Ÿ"
+            value={candidate["×¡×™×›×•× ×©×™×—×ª ×˜×œ×¤×•×Ÿ"]}
             onChange={handleChange}
             className="form-textarea"
           />
@@ -59,11 +59,11 @@ function JobRoleStep({ children, candidate, setCandidate }) {
 
       <div className="form-group">
         <label>
-          תאריך שיחת טלפון:
+          Phone Screening Date
           <input
             type="date"
-            name="תאריך שיחת טלפון"
-            value={candidate["תאריך שיחת טלפון"]}
+            name="×ª××¨×™×š ×©×™×—×ª ×˜×œ×¤×•×Ÿ"
+            value={candidate["×ª××¨×™×š ×©×™×—×ª ×˜×œ×¤×•×Ÿ"]}
             onChange={handleChange}
             className="form-input"
           />

@@ -1,73 +1,103 @@
-/* Styles for the table */
+.records-page {
+  padding-bottom: 32px;
+}
+
+.records-shell {
+  padding-top: 16px;
+}
+
+.records-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.candidates-table-panel {
+  padding: 24px;
+}
+
+.table-container {
+  overflow: auto;
+  margin-top: 18px;
+}
+
 .table {
   width: 100%;
-  margin: 20px 0;
-  font-size: 1.2em;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-  border-radius: 10px;
-  overflow: hidden;
+  min-width: 1200px;
   border-collapse: separate;
   border-spacing: 0;
 }
 
-/* Table headers */
 .thead th {
-  text-align: center;
-  background-color: #278efd;
-  color: #ffffff;
-  /* text-align: left; */
-  padding: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 16px 14px;
+  text-align: left;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #f3f8fb;
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary));
 }
 
-/* Table data rows */
+.thead th:first-child {
+  border-top-left-radius: 16px;
+}
+
+.thead th:last-child {
+  border-top-right-radius: 16px;
+}
+
 .tbody td {
-  padding: 12px;
-  border-bottom: 1px solid #dddddd;
+  padding: 14px;
+  border-bottom: 1px solid rgba(214, 224, 231, 0.8);
+  background: rgba(255, 255, 255, 0.82);
+  vertical-align: top;
+  color: var(--text-primary);
 }
 
-/* Zebra striping for table rows */
-.tbody tr:nth-of-type(even) {
-  background-color: #f3f3f3;
+.tbody tr:nth-of-type(even) td {
+  background: rgba(247, 250, 252, 0.92);
 }
 
-/* Hover effect */
-.tbody tr:hover {
-  background-color: #d4d4d4;
+.tbody tr:hover td {
+  background: rgba(232, 243, 248, 0.92);
 }
 
-.login-button {
-  text-decoration: none;
+.tbody td input[type="checkbox"] {
+  width: auto;
 }
 
-.div-logo {
-  padding: 10px;
+.button-td,
+.table td:last-child,
+.table td:nth-last-child(2) {
+  white-space: nowrap;
 }
 
-.container {
-  margin: 15px;
-  padding: 10px;
-  background-color: white;
-  height: 100vh;
+.secondary-action {
+  background: #fff;
+  color: var(--primary);
+  border: 1px solid rgba(15, 60, 99, 0.18);
+  box-shadow: none;
 }
 
-input {
-  width: 80%;
-  padding: 12px;
-  border: 1px solid #cccccc;
-  border-radius: 4px;
-  font-size: 16px;
-  margin-top: 8px;
+.danger-action {
+  background: linear-gradient(135deg, #9f3842 0%, var(--error) 100%);
 }
 
-.button-td button {
-  margin: 2.5px;
+.empty-state {
+  padding: 42px 20px;
+  text-align: center;
 }
 
-select {
-  width: fit-content;
-  padding: 12px;
-  border: 1px solid #cccccc;
-  border-radius: 4px;
-  font-size: 16px;
-  margin-top: 8px;
+.empty-state p {
+  color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+  .candidates-table-panel {
+    padding: 18px;
+  }
 }

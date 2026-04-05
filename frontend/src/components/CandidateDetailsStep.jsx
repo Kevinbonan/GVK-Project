@@ -18,10 +18,10 @@ function CandidateDetailsStep({ children, candidate, setCandidate }) {
     <div className="candidate-details-step">
       <div className="form-group">
         <label>
-          סיכום ראיון:
+          Interview Summary
           <textarea
-            name="סיכום ריאיון"
-            value={candidate["סיכום ריאיון"]}
+            name="×¡×™×›×•× ×¨×™××™×•×Ÿ"
+            value={candidate["×¡×™×›×•× ×¨×™××™×•×Ÿ"]}
             onChange={handleChange}
             className="form-textarea"
           />
@@ -29,11 +29,11 @@ function CandidateDetailsStep({ children, candidate, setCandidate }) {
       </div>
       <div className="form-group">
         <label>
-          שנות ניסיון:
+          Years of Experience
           <input
             type="number"
-            name="שנות ניסיון"
-            value={candidate["שנות ניסיון"]}
+            name="×©× ×•×ª × ×™×¡×™×•×Ÿ"
+            value={candidate["×©× ×•×ª × ×™×¡×™×•×Ÿ"]}
             onChange={handleChange}
             className="form-input"
           />
@@ -41,29 +41,29 @@ function CandidateDetailsStep({ children, candidate, setCandidate }) {
       </div>
       <div className="form-group checkbox-group">
         <label>
-          סיווג ביטחוני:
+          Security Clearance
           <input
             type="checkbox"
-            name="סיווג ביטחוני"
+            name="×¡×™×•×•×’ ×‘×™×˜×—×•× ×™"
             onChange={handleChange}
             className="form-checkbox"
-            value={candidate["סיווג ביטחוני"]}
-            checked={candidate["סיווג ביטחוני"] ? true : false}
+            value={candidate["×¡×™×•×•×’ ×‘×™×˜×—×•× ×™"]}
+            checked={candidate["×¡×™×•×•×’ ×‘×™×˜×—×•× ×™"] ? true : false}
           />
         </label>
         <label>
-          בטיחות:
+          Safety Certified
           <input
             type="checkbox"
-            name="בטיחות"
+            name="×‘×˜×™×—×•×ª"
             onChange={handleChange}
             className="form-checkbox"
-            value={candidate.בטיחות}
-            checked={candidate.בטיחות ? true : false}
+            value={candidate.×‘×˜×™×—×•×ª}
+            checked={candidate.×‘×˜×™×—×•×ª ? true : false}
           />
         </label>
         <label>
-          101:
+          101
           <input
             type="checkbox"
             name="'101'"
@@ -76,11 +76,11 @@ function CandidateDetailsStep({ children, candidate, setCandidate }) {
       </div>
       <div className="form-group">
         <label>
-          תאריך ראיון:
+          Interview Date
           <input
             type="date"
-            name="תאריך ריאיון"
-            value={candidate["תאריך ריאיון"]}
+            name="×ª××¨×™×š ×¨×™××™×•×Ÿ"
+            value={candidate["×ª××¨×™×š ×¨×™××™×•×Ÿ"]}
             onChange={handleChange}
             className="form-input"
           />
