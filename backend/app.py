@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from pymongo import MongoClient
+from pymongo.errors import DuplicateKeyError
 from bson.json_util import dumps
 from bson.objectid import ObjectId
 import os
@@ -168,11 +169,13 @@ def load_user(user_id):
 
 @app.route('/create_admin', methods=['GET'])
 def create_admin():
-    
     user_data = {"username": "admin", "password": "password", "isAdmin": True}
     user_data['password'] = bcrypt.hashpw(user_data['password'].encode('utf-8'), bcrypt.gensalt())
-    users.insert_one(user_data)
-    return 'Admin Created'
+    try:
+        users.insert_one(user_data)
+        return jsonify({"message": "Admin user created successfully."}), 201
+    except DuplicateKeyError:
+        return jsonify({"message": "Admin user already exists."}), 200
 
 
 
