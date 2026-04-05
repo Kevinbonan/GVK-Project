@@ -1,5 +1,6 @@
 .card-shell-single {
-  width: min(980px, 100%);
+  width: 100%;
+  max-width: 100%;
 }
 
 .card-shell {
@@ -10,7 +11,7 @@
   display: flex;
   align-items: center;
   gap: 18px;
-  margin-bottom: 18px;
+  margin-bottom: 12px;
 }
 
 .card-shell-brand .logo {
@@ -23,27 +24,28 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 18px;
-  margin-bottom: 24px;
-  padding-bottom: 18px;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
   border-bottom: 1px solid rgba(214, 224, 231, 0.85);
 }
 
 .candidate-flow-header h1 {
-  margin-bottom: 8px;
-  font-size: 2rem;
+  margin-bottom: 6px;
+  font-size: 1.72rem;
   letter-spacing: -0.03em;
 }
 
 .candidate-flow-header p {
   max-width: 60ch;
   color: var(--text-secondary);
-  line-height: 1.65;
+  line-height: 1.5;
+  margin-bottom: 0;
 }
 
 .candidate-details-step,
 .additional-info-step {
   display: grid;
-  gap: 18px;
+  gap: 14px;
 }
 
 .candidate-details-step {
@@ -52,7 +54,7 @@
 
 .candidate-details-step .form-group,
 .additional-info-step {
-  padding: 20px;
+  padding: 16px;
   border: 1px solid rgba(214, 224, 231, 0.86);
   border-radius: 18px;
   background: var(--surface-muted);
@@ -61,14 +63,14 @@
 .checkbox-group {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 12px;
 }
 
 .checkbox-group label {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 14px;
+  padding: 10px 12px;
   border: 1px solid var(--border);
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.88);
@@ -82,14 +84,14 @@
 .radio {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
 }
 
 .radio label {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 14px;
+  padding: 10px 12px;
   border: 1px solid var(--border);
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.88);
@@ -99,6 +101,10 @@ fieldset {
   margin: 0;
   padding: 0;
   border: none;
+}
+
+.card-shell .button-group {
+  margin-top: 16px;
 }
 
 @media (max-width: 768px) {

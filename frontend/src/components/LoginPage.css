@@ -5,6 +5,14 @@
   padding: 28px;
 }
 
+.candidate-layout-page {
+  min-height: auto;
+  display: block;
+  padding: 0 0 20px;
+  width: min(var(--content-width), calc(100% - 32px));
+  margin: 0 auto;
+}
+
 .login-grid {
   width: min(1180px, 100%);
   display: grid;
@@ -90,6 +98,11 @@
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(244, 248, 250, 0.95) 100%);
 }
 
+.candidate-layout-page .login-container {
+  padding: 24px 26px;
+  border-radius: 24px;
+}
+
 .login-panel-header h2 {
   margin-bottom: 8px;
   font-size: 1.9rem;
@@ -150,6 +163,10 @@
 @media (max-width: 640px) {
   .login-page {
     padding: 16px;
+  }
+
+  .candidate-layout-page {
+    padding: 0 0 16px;
   }
 
   .login-intro,

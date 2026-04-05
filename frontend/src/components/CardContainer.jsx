@@ -4,8 +4,8 @@ import "./LoginPage.css";
 
 function CardContainer({ children }) {
   return (
-    <div className="login-page">
-      <div className="login-grid card-shell-single">
+    <div className="login-page candidate-layout-page page-shell">
+      <div className="card-shell-single">
         <div className="login-container card-shell">
           <div className="card-shell-brand">
             <img src={gvkLogo} alt="GVK Logo" className="logo" />
