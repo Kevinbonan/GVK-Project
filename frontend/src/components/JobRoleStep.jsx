@@ -1,4 +1,10 @@
 import React from "react";
+import { getCandidateValue, primaryCandidateKey } from "./candidateFields";
+
+const NAME_KEY = primaryCandidateKey("name");
+const ROLE_KEY = primaryCandidateKey("role");
+const PHONE_SUMMARY_KEY = primaryCandidateKey("phoneSummary");
+const PHONE_DATE_KEY = primaryCandidateKey("phoneDate");
 
 function JobRoleStep({ children, candidate, setCandidate }) {
   const handleChange = (event) => {
@@ -16,9 +22,9 @@ function JobRoleStep({ children, candidate, setCandidate }) {
           Full Name
           <input
             type="text"
-            name="×©×"
+            name={NAME_KEY}
             className="form-input"
-            value={candidate.×©×}
+            value={getCandidateValue(candidate, "name") || ""}
             onChange={handleChange}
           />
         </label>
@@ -28,9 +34,9 @@ function JobRoleStep({ children, candidate, setCandidate }) {
               Technician
               <input
                 type="radio"
-                name="×ª×¤×§×™×“"
+                name={ROLE_KEY}
                 value="×˜×›× ××™"
-                checked={candidate.×ª×¤×§×™×“ === "×˜×›× ××™"}
+                checked={getCandidateValue(candidate, "role") === "×˜×›× ××™"}
                 onChange={handleChange}
               />
             </label>
@@ -38,9 +44,9 @@ function JobRoleStep({ children, candidate, setCandidate }) {
               Other
               <input
                 type="radio"
-                name="×ª×¤×§×™×“"
+                name={ROLE_KEY}
                 value="××—×¨"
-                checked={candidate.×ª×¤×§×™×“ === "××—×¨"}
+                checked={getCandidateValue(candidate, "role") === "××—×¨"}
                 onChange={handleChange}
               />
             </label>
@@ -49,8 +55,8 @@ function JobRoleStep({ children, candidate, setCandidate }) {
         <label>
           Phone Screening Summary
           <textarea
-            name="×¡×™×›×•× ×©×™×—×ª ×˜×œ×¤×•×Ÿ"
-            value={candidate["×¡×™×›×•× ×©×™×—×ª ×˜×œ×¤×•×Ÿ"]}
+            name={PHONE_SUMMARY_KEY}
+            value={getCandidateValue(candidate, "phoneSummary") || ""}
             onChange={handleChange}
             className="form-textarea"
           />
@@ -62,8 +68,8 @@ function JobRoleStep({ children, candidate, setCandidate }) {
           Phone Screening Date
           <input
             type="date"
-            name="×ª××¨×™×š ×©×™×—×ª ×˜×œ×¤×•×Ÿ"
-            value={candidate["×ª××¨×™×š ×©×™×—×ª ×˜×œ×¤×•×Ÿ"]}
+            name={PHONE_DATE_KEY}
+            value={getCandidateValue(candidate, "phoneDate") || ""}
             onChange={handleChange}
             className="form-input"
           />

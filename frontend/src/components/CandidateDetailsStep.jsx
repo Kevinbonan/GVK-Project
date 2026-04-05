@@ -1,17 +1,20 @@
 import React from "react";
+import { getCandidateValue, primaryCandidateKey } from "./candidateFields";
+
+const INTERVIEW_SUMMARY_KEY = primaryCandidateKey("interviewSummary");
+const YEARS_EXPERIENCE_KEY = primaryCandidateKey("yearsExperience");
+const SECURITY_KEY = primaryCandidateKey("securityClearance");
+const SAFETY_KEY = primaryCandidateKey("safety");
+const FORM_101_KEY = primaryCandidateKey("form101");
+const INTERVIEW_DATE_KEY = primaryCandidateKey("interviewDate");
 
 function CandidateDetailsStep({ children, candidate, setCandidate }) {
   const handleChange = (event) => {
     const { name, type, value, checked } = event.target;
-    type === "checkbox"
-      ? setCandidate((prev) => ({
-          ...prev,
-          [name]: checked,
-        }))
-      : setCandidate((prev) => ({
-          ...prev,
-          [name]: value,
-        }));
+    setCandidate((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
   return (
@@ -20,8 +23,8 @@ function CandidateDetailsStep({ children, candidate, setCandidate }) {
         <label>
           Interview Summary
           <textarea
-            name="×¡×™×›×•× ×¨×™××™×•×Ÿ"
-            value={candidate["×¡×™×›×•× ×¨×™××™×•×Ÿ"]}
+            name={INTERVIEW_SUMMARY_KEY}
+            value={getCandidateValue(candidate, "interviewSummary") || ""}
             onChange={handleChange}
             className="form-textarea"
           />
@@ -32,8 +35,8 @@ function CandidateDetailsStep({ children, candidate, setCandidate }) {
           Years of Experience
           <input
             type="number"
-            name="×©× ×•×ª × ×™×¡×™×•×Ÿ"
-            value={candidate["×©× ×•×ª × ×™×¡×™×•×Ÿ"]}
+            name={YEARS_EXPERIENCE_KEY}
+            value={getCandidateValue(candidate, "yearsExperience") || 0}
             onChange={handleChange}
             className="form-input"
           />
@@ -44,33 +47,30 @@ function CandidateDetailsStep({ children, candidate, setCandidate }) {
           Security Clearance
           <input
             type="checkbox"
-            name="×¡×™×•×•×’ ×‘×™×˜×—×•× ×™"
+            name={SECURITY_KEY}
             onChange={handleChange}
             className="form-checkbox"
-            value={candidate["×¡×™×•×•×’ ×‘×™×˜×—×•× ×™"]}
-            checked={candidate["×¡×™×•×•×’ ×‘×™×˜×—×•× ×™"] ? true : false}
+            checked={Boolean(getCandidateValue(candidate, "securityClearance"))}
           />
         </label>
         <label>
           Safety Certified
           <input
             type="checkbox"
-            name="×‘×˜×™×—×•×ª"
+            name={SAFETY_KEY}
             onChange={handleChange}
             className="form-checkbox"
-            value={candidate.×‘×˜×™×—×•×ª}
-            checked={candidate.×‘×˜×™×—×•×ª ? true : false}
+            checked={Boolean(getCandidateValue(candidate, "safety"))}
           />
         </label>
         <label>
           101
           <input
             type="checkbox"
-            name="'101'"
+            name={FORM_101_KEY}
             onChange={handleChange}
             className="form-checkbox"
-            value={candidate["'101'"]}
-            checked={candidate["'101'"] ? true : false}
+            checked={Boolean(getCandidateValue(candidate, "form101"))}
           />
         </label>
       </div>
@@ -79,8 +79,8 @@ function CandidateDetailsStep({ children, candidate, setCandidate }) {
           Interview Date
           <input
             type="date"
-            name="×ª××¨×™×š ×¨×™××™×•×Ÿ"
-            value={candidate["×ª××¨×™×š ×¨×™××™×•×Ÿ"]}
+            name={INTERVIEW_DATE_KEY}
+            value={getCandidateValue(candidate, "interviewDate") || ""}
             onChange={handleChange}
             className="form-input"
           />

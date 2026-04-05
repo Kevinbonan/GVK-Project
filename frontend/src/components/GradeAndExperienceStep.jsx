@@ -1,11 +1,12 @@
 import React from "react";
+import { getCandidateValue, primaryCandidateKey } from "./candidateFields";
+
+const GRADE_KEY = primaryCandidateKey("grade");
+const FIELD_EXPERIENCE_KEY = primaryCandidateKey("fieldExperience");
 
 function GradeAndExperienceStep({ children, candidate, setCandidate }) {
   const maxGrade = 5;
-  const listOfGrades = Array.from(
-    { length: maxGrade },
-    (value, index) => index + 1
-  );
+  const listOfGrades = Array.from({ length: maxGrade }, (value, index) => index + 1);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -21,8 +22,8 @@ function GradeAndExperienceStep({ children, candidate, setCandidate }) {
         <label>
           Grade
           <select
-            name="×¦×™×•×Ÿ"
-            value={candidate.×¦×™×•×Ÿ}
+            name={GRADE_KEY}
+            value={getCandidateValue(candidate, "grade") || 0}
             onChange={handleChange}
             className="form-input"
           >
@@ -39,8 +40,8 @@ function GradeAndExperienceStep({ children, candidate, setCandidate }) {
         <label>
           Field Experience
           <textarea
-            name="× ×™×¡×™×•×Ÿ ×‘×©×˜×—"
-            value={candidate["× ×™×¡×™×•×Ÿ ×‘×©×˜×—"]}
+            name={FIELD_EXPERIENCE_KEY}
+            value={getCandidateValue(candidate, "fieldExperience") || ""}
             onChange={handleChange}
             className="form-textarea"
           />

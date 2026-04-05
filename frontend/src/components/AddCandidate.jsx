@@ -12,26 +12,12 @@ import CandidateSummary from "./CandidateSummary";
 import axios from "axios";
 import { BASE_URL } from "../App";
 import { useNavigate } from "react-router-dom";
+import { buildEmptyCandidate } from "./candidateFields";
 
 function AddCandidate() {
   const today = new Date().toISOString().split("T")[0];
   const [isSummary, setIsSummary] = useState(false);
-  const [candidate, setCandidate] = useState({
-    ×©×: "",
-    ×ª×¤×§×™×“: "",
-    "×¡×™×›×•× ×©×™×—×ª ×˜×œ×¤×•×Ÿ": "",
-    "×ª××¨×™×š ×©×™×—×ª ×˜×œ×¤×•×Ÿ": today,
-    "×¡×™×›×•× ×¨×™××™×•×Ÿ": "",
-    "×©× ×•×ª × ×™×¡×™×•×Ÿ": 0,
-    "×¡×™×•×•×’ ×‘×™×˜×—×•× ×™": false,
-    ×‘×˜×™×—×•×ª: false,
-    "'101'": false,
-    "×ª××¨×™×š ×¨×™××™×•×Ÿ": today,
-    ×¦×™×•×Ÿ: 0,
-    "× ×™×¡×™×•×Ÿ ×‘×©×˜×—": "",
-    "×ž×™×“×¢ × ×•×¡×£": "",
-  });
-
+  const [candidate, setCandidate] = useState(buildEmptyCandidate(today));
   const [step, setStep] = useState(1);
   const totalSteps = 4;
   const navigate = useNavigate();
@@ -113,34 +99,14 @@ function AddCandidate() {
     }
   };
 
-  const showSummaryPage = () => {
-    return (
-      <CandidateSummary
-        candidate={candidate}
-        handleSubmit={handleSubmit}
-        children={
-          <ButtonGroup
-            handlePrevious={handlePrevious}
-            step={step}
-            isSummary={isSummary}
-          />
-        }
-      />
-    );
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const response = await axios.post(
         BASE_URL + "/insert_candidate",
-        {
-          candidate,
-        },
-        {
-          withCredentials: true,
-        }
+        { candidate },
+        { withCredentials: true }
       );
 
       if (response.status === 200) {
@@ -171,7 +137,21 @@ function AddCandidate() {
           </div>
         </div>
         {!isSummary && <ProgressBar step={step} totalSteps={totalSteps} />}
-        {isSummary ? showSummaryPage() : renderStep()}
+        {isSummary ? (
+          <CandidateSummary
+            candidate={candidate}
+            handleSubmit={handleSubmit}
+            children={
+              <ButtonGroup
+                handlePrevious={handlePrevious}
+                step={step}
+                isSummary={isSummary}
+              />
+            }
+          />
+        ) : (
+          renderStep()
+        )}
       </CardContainer>
     </>
   );

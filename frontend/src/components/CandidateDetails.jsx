@@ -4,6 +4,7 @@ import axios from "axios";
 import Navbar from "./Navbar";
 import { BASE_URL } from "../App";
 import "./CandidateDetails.css";
+import { getCandidateValue } from "./candidateFields";
 
 const STATUSES = [
   "Applied",
@@ -126,9 +127,7 @@ function CandidateDetails() {
       setCandidate((prev) => ({ ...prev, cv_analysis: response.data }));
       setAnalysisMessage("CV analyzed successfully.");
     } catch (error) {
-      setAnalysisMessage(
-        error.response?.data?.error || "CV analysis failed."
-      );
+      setAnalysisMessage(error.response?.data?.error || "CV analysis failed.");
     } finally {
       setIsAnalyzing(false);
     }
@@ -158,7 +157,7 @@ function CandidateDetails() {
         <section className="page-header">
           <div>
             <div className="eyebrow">Candidate Profile</div>
-            <h1>{candidate["Ã—Â©Ã—Â"] || candidate.fullName || "Candidate details"}</h1>
+            <h1>{getCandidateValue(candidate, "name") || candidate.fullName || "Candidate details"}</h1>
             <p>
               Detailed recruitment record combining operational status,
               interview notes and automated CV screening.
@@ -170,7 +169,7 @@ function CandidateDetails() {
         <section className="candidate-card">
           <div className="candidate-card-meta">
             <p>
-              <strong>Role:</strong> {candidate["Ã—ÂªÃ—Â¤Ã—Â§Ã—â„¢Ã—â€œ"] || candidate.jobTitle || "N/A"}
+              <strong>Role:</strong> {getCandidateValue(candidate, "role") || candidate.jobTitle || "N/A"}
             </p>
             <p>
               <strong>Email:</strong> {candidate.email || "N/A"}
@@ -280,9 +279,7 @@ function CandidateDetails() {
               </button>
             </form>
 
-            {analysisMessage ? (
-              <p className="analysis-message">{analysisMessage}</p>
-            ) : null}
+            {analysisMessage ? <p className="analysis-message">{analysisMessage}</p> : null}
 
             {candidate.cv_analysis ? (
               <div className="analysis-card">
@@ -293,20 +290,16 @@ function CandidateDetails() {
                   <strong>Score:</strong> {candidate.cv_analysis.match_score}%
                 </p>
                 <p>
-                  <strong>Required threshold:</strong>{" "}
-                  {candidate.cv_analysis.match_threshold}%
+                  <strong>Required threshold:</strong> {candidate.cv_analysis.match_threshold}%
                 </p>
                 <p>
-                  <strong>First screening:</strong>{" "}
-                  {candidate.cv_analysis.is_match ? "Accepted" : "Rejected"}
+                  <strong>First screening:</strong> {candidate.cv_analysis.is_match ? "Accepted" : "Rejected"}
                 </p>
                 <p>
-                  <strong>Matched keywords:</strong>{" "}
-                  {candidate.cv_analysis.matched_keywords?.join(", ") || "None"}
+                  <strong>Matched keywords:</strong> {candidate.cv_analysis.matched_keywords?.join(", ") || "None"}
                 </p>
                 <p>
-                  <strong>Missing keywords:</strong>{" "}
-                  {candidate.cv_analysis.missing_keywords?.join(", ") || "None"}
+                  <strong>Missing keywords:</strong> {candidate.cv_analysis.missing_keywords?.join(", ") || "None"}
                 </p>
                 <p>
                   <strong>File:</strong> {candidate.cv_analysis.cv_filename}

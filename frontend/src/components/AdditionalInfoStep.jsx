@@ -1,4 +1,7 @@
 import React from "react";
+import { getCandidateValue, primaryCandidateKey } from "./candidateFields";
+
+const ADDITIONAL_INFO_KEY = primaryCandidateKey("additionalInfo");
 
 function AdditionalInfoStep({ children, candidate, setCandidate }) {
   const handleChange = (event) => {
@@ -14,8 +17,8 @@ function AdditionalInfoStep({ children, candidate, setCandidate }) {
       <label>
         Additional Information
         <textarea
-          name="×ž×™×“×¢ × ×•×¡×£"
-          value={candidate["×ž×™×“×¢ × ×•×¡×£"]}
+          name={ADDITIONAL_INFO_KEY}
+          value={getCandidateValue(candidate, "additionalInfo") || ""}
           onChange={handleChange}
           className="form-textarea"
         />

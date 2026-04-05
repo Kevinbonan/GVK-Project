@@ -6,26 +6,31 @@ import "./AllCandidates.css";
 import ExportButton from "./ExportButton";
 import { handleMessage } from "./LoginPage";
 import Alert from "@mui/material/Alert";
+import {
+  buildEmptyCandidate,
+  getCandidateValue,
+  primaryCandidateKey,
+} from "./candidateFields";
+
+const NAME_KEY = primaryCandidateKey("name");
+const ROLE_KEY = primaryCandidateKey("role");
+const PHONE_SUMMARY_KEY = primaryCandidateKey("phoneSummary");
+const PHONE_DATE_KEY = primaryCandidateKey("phoneDate");
+const INTERVIEW_SUMMARY_KEY = primaryCandidateKey("interviewSummary");
+const YEARS_EXPERIENCE_KEY = primaryCandidateKey("yearsExperience");
+const SECURITY_KEY = primaryCandidateKey("securityClearance");
+const SAFETY_KEY = primaryCandidateKey("safety");
+const FORM_101_KEY = primaryCandidateKey("form101");
+const INTERVIEW_DATE_KEY = primaryCandidateKey("interviewDate");
+const GRADE_KEY = primaryCandidateKey("grade");
+const FIELD_EXPERIENCE_KEY = primaryCandidateKey("fieldExperience");
+const ADDITIONAL_INFO_KEY = primaryCandidateKey("additionalInfo");
 
 function AllCandidates() {
   const [message, setMessage] = useState("");
   const [candidatesList, setCandidatesList] = useState([]);
   const [editingCandidate, setEditingCandidate] = useState(null);
-  const [formData, setFormData] = useState({
-    ×©×: "",
-    ×ª×¤×§×™×“: "",
-    "×¡×™×›×•× ×©×™×—×ª ×˜×œ×¤×•×Ÿ": "",
-    "×ª××¨×™×š ×©×™×—×ª ×˜×œ×¤×•×Ÿ": "",
-    "×¡×™×›×•× ×¨×™××™×•×Ÿ": "",
-    "×©× ×•×ª × ×™×¡×™×•×Ÿ": "",
-    "×¡×™×•×•×’ ×‘×™×˜×—×•× ×™": false,
-    ×‘×˜×™×—×•×ª: false,
-    "'101'": false,
-    "×ª××¨×™×š ×¨×™××™×•×Ÿ": "",
-    ×¦×™×•×Ÿ: "",
-    "× ×™×¡×™×•×Ÿ ×‘×©×˜×—": "",
-    "×ž×™×“×¢ × ×•×¡×£": "",
-  });
+  const [formData, setFormData] = useState(buildEmptyCandidate(""));
   const jobOptions = ["×˜×›× ××™", "××—×¨"];
 
   const getAllCandidates = async () => {
@@ -59,30 +64,23 @@ function AllCandidates() {
 
   const handleEdit = (candidate) => {
     setEditingCandidate(candidate._id);
-    setFormData({ ...candidate });
+    setFormData({ ...buildEmptyCandidate(""), ...candidate });
   };
 
   const handleFieldChange = (e, field) => {
-    const value =
-      e.target.type === "checkbox" ? e.target.checked : e.target.value;
+    const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
     setFormData({ ...formData, [field]: value });
   };
 
   const saveUpdatedCandidate = async (id) => {
     try {
-      const response = await axios.put(
-        BASE_URL + "/updateCandidate/" + id,
-        formData,
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axios.put(BASE_URL + "/updateCandidate/" + id, formData, {
+        withCredentials: true,
+      });
       if (response.status === 200) {
         setCandidatesList((prevList) =>
           prevList.map((candidate) =>
-            candidate._id.toString() === id
-              ? { ...candidate, ...formData }
-              : candidate
+            candidate._id.toString() === id ? { ...candidate, ...formData } : candidate
           )
         );
         setEditingCandidate(null);
@@ -148,14 +146,14 @@ function AllCandidates() {
                           <td>
                             <input
                               type="text"
-                              value={formData.×©×}
-                              onChange={(e) => handleFieldChange(e, "×©×")}
+                              value={getCandidateValue(formData, "name") || ""}
+                              onChange={(e) => handleFieldChange(e, NAME_KEY)}
                             />
                           </td>
                           <td>
                             <select
-                              value={formData.×ª×¤×§×™×“}
-                              onChange={(e) => handleFieldChange(e, "×ª×¤×§×™×“")}
+                              value={getCandidateValue(formData, "role") || ""}
+                              onChange={(e) => handleFieldChange(e, ROLE_KEY)}
                             >
                               {jobOptions.map((job, idx) => (
                                 <option key={idx} value={job}>
@@ -167,71 +165,65 @@ function AllCandidates() {
                           <td>
                             <input
                               type="text"
-                              value={formData["×¡×™×›×•× ×©×™×—×ª ×˜×œ×¤×•×Ÿ"]}
-                              onChange={(e) =>
-                                handleFieldChange(e, "×¡×™×›×•× ×©×™×—×ª ×˜×œ×¤×•×Ÿ")
-                              }
+                              value={getCandidateValue(formData, "phoneSummary") || ""}
+                              onChange={(e) => handleFieldChange(e, PHONE_SUMMARY_KEY)}
                             />
                           </td>
                           <td>
                             <input
                               type="date"
-                              value={formData["×ª××¨×™×š ×©×™×—×ª ×˜×œ×¤×•×Ÿ"]}
-                              onChange={(e) =>
-                                handleFieldChange(e, "×ª××¨×™×š ×©×™×—×ª ×˜×œ×¤×•×Ÿ")
-                              }
+                              value={getCandidateValue(formData, "phoneDate") || ""}
+                              onChange={(e) => handleFieldChange(e, PHONE_DATE_KEY)}
                             />
                           </td>
                           <td>
                             <input
                               type="text"
-                              value={formData["×¡×™×›×•× ×¨×™××™×•×Ÿ"]}
-                              onChange={(e) => handleFieldChange(e, "×¡×™×›×•× ×¨×™××™×•×Ÿ")}
+                              value={getCandidateValue(formData, "interviewSummary") || ""}
+                              onChange={(e) => handleFieldChange(e, INTERVIEW_SUMMARY_KEY)}
                             />
                           </td>
                           <td>
                             <input
                               type="number"
-                              value={formData["×©× ×•×ª × ×™×¡×™×•×Ÿ"]}
-                              onChange={(e) => handleFieldChange(e, "×©× ×•×ª × ×™×¡×™×•×Ÿ")}
+                              value={getCandidateValue(formData, "yearsExperience") || 0}
+                              onChange={(e) => handleFieldChange(e, YEARS_EXPERIENCE_KEY)}
                               min={0}
                             />
                           </td>
                           <td>
                             <input
                               type="checkbox"
-                              checked={formData["×¡×™×•×•×’ ×‘×™×˜×—×•× ×™"]}
-                              onChange={(e) =>
-                                handleFieldChange(e, "×¡×™×•×•×’ ×‘×™×˜×—×•× ×™")
-                              }
+                              checked={Boolean(getCandidateValue(formData, "securityClearance"))}
+                              onChange={(e) => handleFieldChange(e, SECURITY_KEY)}
                             />
                           </td>
                           <td>
                             <input
                               type="checkbox"
-                              checked={formData.×‘×˜×™×—×•×ª}
-                              onChange={(e) => handleFieldChange(e, "×‘×˜×™×—×•×ª")}
+                              checked={Boolean(getCandidateValue(formData, "safety"))}
+                              onChange={(e) => handleFieldChange(e, SAFETY_KEY)}
                             />
                           </td>
                           <td>
                             <input
                               type="checkbox"
-                              checked={formData["'101'"]}
-                              onChange={(e) => handleFieldChange(e, "'101'")}
+                              checked={Boolean(getCandidateValue(formData, "form101"))}
+                              onChange={(e) => handleFieldChange(e, FORM_101_KEY)}
                             />
                           </td>
                           <td>
                             <input
                               type="date"
-                              value={formData["×ª××¨×™×š ×¨×™××™×•×Ÿ"]}
-                              onChange={(e) => handleFieldChange(e, "×ª××¨×™×š ×¨×™××™×•×Ÿ")}
+                              value={getCandidateValue(formData, "interviewDate") || ""}
+                              onChange={(e) => handleFieldChange(e, INTERVIEW_DATE_KEY)}
                             />
                           </td>
                           <td>
                             <input
                               type="number"
-                              value={formData.×¦×™×•×Ÿ}
-                              onChange={(e) => handleFieldChange(e, "×¦×™×•×Ÿ")}
+                              value={getCandidateValue(formData, "grade") || 0}
+                              onChange={(e) => handleFieldChange(e, GRADE_KEY)}
                               min={0}
                               max={5}
                             />
@@ -239,15 +231,15 @@ function AllCandidates() {
                           <td>
                             <input
                               type="text"
-                              value={formData["× ×™×¡×™×•×Ÿ ×‘×©×˜×—"]}
-                              onChange={(e) => handleFieldChange(e, "× ×™×¡×™×•×Ÿ ×‘×©×˜×—")}
+                              value={getCandidateValue(formData, "fieldExperience") || ""}
+                              onChange={(e) => handleFieldChange(e, FIELD_EXPERIENCE_KEY)}
                             />
                           </td>
                           <td>
                             <input
                               type="text"
-                              value={formData["×ž×™×“×¢ × ×•×¡×£"]}
-                              onChange={(e) => handleFieldChange(e, "×ž×™×“×¢ × ×•×¡×£")}
+                              value={getCandidateValue(formData, "additionalInfo") || ""}
+                              onChange={(e) => handleFieldChange(e, ADDITIONAL_INFO_KEY)}
                             />
                           </td>
                           <td className="button-td">
@@ -266,19 +258,19 @@ function AllCandidates() {
                         </>
                       ) : (
                         <>
-                          <td>{candidate.×©×}</td>
-                          <td>{candidate.×ª×¤×§×™×“}</td>
-                          <td>{candidate["×¡×™×›×•× ×©×™×—×ª ×˜×œ×¤×•×Ÿ"]}</td>
-                          <td>{candidate["×ª××¨×™×š ×©×™×—×ª ×˜×œ×¤×•×Ÿ"]}</td>
-                          <td>{candidate["×¡×™×›×•× ×¨×™××™×•×Ÿ"]}</td>
-                          <td>{candidate["×©× ×•×ª × ×™×¡×™×•×Ÿ"]}</td>
-                          <td>{candidate["×¡×™×•×•×’ ×‘×™×˜×—×•× ×™"]?.toString()}</td>
-                          <td>{candidate["×‘×˜×™×—×•×ª"]?.toString()}</td>
-                          <td>{candidate["'101'"]?.toString()}</td>
-                          <td>{candidate["×ª××¨×™×š ×¨×™××™×•×Ÿ"]}</td>
-                          <td>{candidate.×¦×™×•×Ÿ}</td>
-                          <td>{candidate["× ×™×¡×™×•×Ÿ ×‘×©×˜×—"]}</td>
-                          <td>{candidate["×ž×™×“×¢ × ×•×¡×£"]}</td>
+                          <td>{getCandidateValue(candidate, "name") || ""}</td>
+                          <td>{getCandidateValue(candidate, "role") || ""}</td>
+                          <td>{getCandidateValue(candidate, "phoneSummary") || ""}</td>
+                          <td>{getCandidateValue(candidate, "phoneDate") || ""}</td>
+                          <td>{getCandidateValue(candidate, "interviewSummary") || ""}</td>
+                          <td>{getCandidateValue(candidate, "yearsExperience") || ""}</td>
+                          <td>{String(Boolean(getCandidateValue(candidate, "securityClearance")))}</td>
+                          <td>{String(Boolean(getCandidateValue(candidate, "safety")))}</td>
+                          <td>{String(Boolean(getCandidateValue(candidate, "form101")))}</td>
+                          <td>{getCandidateValue(candidate, "interviewDate") || ""}</td>
+                          <td>{getCandidateValue(candidate, "grade") || ""}</td>
+                          <td>{getCandidateValue(candidate, "fieldExperience") || ""}</td>
+                          <td>{getCandidateValue(candidate, "additionalInfo") || ""}</td>
                           <td>
                             <button
                               className="secondary-action"
