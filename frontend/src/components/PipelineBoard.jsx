@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
 import { BASE_URL } from "../App";
+import { getCandidateValue } from "./candidateFields";
 import "./PipelineBoard.css";
 
 const STATUSES = [
@@ -43,6 +44,7 @@ function PipelineBoard() {
     if (!nextStatus) {
       return;
     }
+
     await axios.put(
       `${BASE_URL}/candidates/${candidate._id}/status`,
       { status: nextStatus },
@@ -81,9 +83,17 @@ function PipelineBoard() {
                       <span className="status-pill">{status}</span>
                     </div>
                     <Link to={`/candidates/${candidate._id}`}>
-                      <strong>{candidate["×©×"] || candidate.fullName}</strong>
+                      <strong>
+                        {getCandidateValue(candidate, "name") ||
+                          candidate.fullName ||
+                          "Unnamed candidate"}
+                      </strong>
                     </Link>
-                    <p>{candidate["×ª×¤×§×™×“"] || candidate.jobTitle}</p>
+                    <p>
+                      {getCandidateValue(candidate, "role") ||
+                        candidate.jobTitle ||
+                        "No role assigned"}
+                    </p>
                     <button
                       type="button"
                       onClick={() => moveToNextStatus(candidate)}

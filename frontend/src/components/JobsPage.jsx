@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Alert from "@mui/material/Alert";
 import Navbar from "./Navbar";
 import { BASE_URL } from "../App";
 import "./JobsPage.css";
 
 function JobsPage() {
   const [jobs, setJobs] = useState([]);
+  const [message, setMessage] = useState("");
+  const [messageSeverity, setMessageSeverity] = useState("success");
   const [formData, setFormData] = useState({
     title: "",
     department: "",
@@ -16,10 +19,15 @@ function JobsPage() {
   });
 
   const fetchJobs = async () => {
-    const response = await axios.get(`${BASE_URL}/jobs`, {
-      withCredentials: true,
-    });
-    setJobs(response.data);
+    try {
+      const response = await axios.get(`${BASE_URL}/jobs`, {
+        withCredentials: true,
+      });
+      setJobs(response.data);
+    } catch (error) {
+      setMessage(error.response?.data?.error || "Unable to load jobs.");
+      setMessageSeverity("error");
+    }
   };
 
   useEffect(() => {
@@ -33,34 +41,55 @@ function JobsPage() {
 
   const addJob = async (event) => {
     event.preventDefault();
-    await axios.post(`${BASE_URL}/jobs`, formData, {
-      withCredentials: true,
-    });
-    setFormData({
-      title: "",
-      department: "",
-      location: "",
-      status: "open",
-      keywords: "",
-      match_threshold: 60,
-    });
-    fetchJobs();
+    try {
+      await axios.post(`${BASE_URL}/jobs`, formData, {
+        withCredentials: true,
+      });
+      setFormData({
+        title: "",
+        department: "",
+        location: "",
+        status: "open",
+        keywords: "",
+        match_threshold: 60,
+      });
+      setMessage("Job created successfully.");
+      setMessageSeverity("success");
+      fetchJobs();
+    } catch (error) {
+      setMessage(error.response?.data?.error || "Unable to create job.");
+      setMessageSeverity("error");
+    }
   };
 
   const updateJobStatus = async (jobId, status) => {
-    await axios.put(
-      `${BASE_URL}/jobs/${jobId}`,
-      { status },
-      { withCredentials: true }
-    );
-    fetchJobs();
+    try {
+      await axios.put(
+        `${BASE_URL}/jobs/${jobId}`,
+        { status },
+        { withCredentials: true }
+      );
+      setMessage("Job updated successfully.");
+      setMessageSeverity("success");
+      fetchJobs();
+    } catch (error) {
+      setMessage(error.response?.data?.error || "Unable to update job.");
+      setMessageSeverity("error");
+    }
   };
 
   const deleteJob = async (jobId) => {
-    await axios.delete(`${BASE_URL}/jobs/${jobId}`, {
-      withCredentials: true,
-    });
-    fetchJobs();
+    try {
+      await axios.delete(`${BASE_URL}/jobs/${jobId}`, {
+        withCredentials: true,
+      });
+      setMessage("Job deleted successfully.");
+      setMessageSeverity("success");
+      fetchJobs();
+    } catch (error) {
+      setMessage(error.response?.data?.error || "Unable to delete job.");
+      setMessageSeverity("error");
+    }
   };
 
   return (
@@ -78,6 +107,8 @@ function JobsPage() {
           </div>
           <span className="status-pill">{jobs.length} configured jobs</span>
         </section>
+
+        {message ? <Alert severity={messageSeverity}>{message}</Alert> : null}
 
         <div className="jobs-layout">
           <form className="job-form section-card" onSubmit={addJob}>

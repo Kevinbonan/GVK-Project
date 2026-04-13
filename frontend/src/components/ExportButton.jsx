@@ -1,16 +1,14 @@
 import React from "react";
 import axios from "axios";
+import { BASE_URL } from "../App";
 
 function ExportButton() {
   const handleExport = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:5000/export_candidates",
-        {
-          responseType: "blob",
-          withCredentials: true,
-        }
-      );
+      const response = await axios.get(`${BASE_URL}/export_candidates`, {
+        responseType: "blob",
+        withCredentials: true,
+      });
 
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
